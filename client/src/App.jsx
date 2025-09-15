@@ -19,9 +19,10 @@
 // export default App;
 
 import Home from './components/Home'
-
+import Admin from './components/Admin'
 function App() {
-  return <Home />
+  return <Admin />
+
 }
 
 export default App
