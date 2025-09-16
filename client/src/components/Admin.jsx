@@ -38,11 +38,13 @@ const Admin = () => {
   ]);
   const [totalUsers] = useState(5);
 
-  const [problems] = useState(["Draft Bill 1", "Draft Bill 2", "Draft Bill 3"]);
+  const [problems, setProblems] = useState(["Draft Bill 1", "Draft Bill 2", "Draft Bill 3"]);
   const [selectedProblem, setSelectedProblem] = useState("Draft Bill 1");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [newBill, setNewBill] = useState("");
+  const [statusMessage, setStatusMessage] = useState({ message: "", type: "" });
+  const [addingBill, setAddingBill] = useState(false);
 
   /* Pie Chart Data */
   const sentimentData = [
@@ -73,13 +75,34 @@ const Admin = () => {
 
   const filteredProblems = problems.filter((p) => p.toLowerCase().includes(search.toLowerCase()));
 
-  const handleAddBill = () => {
-    if (newBill.trim() !== "") {
-      // In a real app, you would send this to a backend
-      // and update the state after a successful response.
-      // For this example, we'll just log it.
-      console.log(`Adding new bill: ${newBill}`);
-      setNewBill("");
+  const handleAddBill = async () => {
+    if (newBill.trim() === "") return;
+
+    setAddingBill(true);
+    setStatusMessage({ message: "", type: "" });
+
+    try {
+      const res = await fetch("http://localhost:5000/api/problems/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ title: newBill, createdBy: "admin@gmail.com" }),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        setStatusMessage({ message: "Bill added successfully!", type: "success" });
+        setProblems((prev) => [...prev, data.problem.title]); // update UI
+        setNewBill("");
+      } else {
+        setStatusMessage({ message: "Error: " + data.error, type: "error" });
+      }
+    } catch (err) {
+      console.error(err);
+      setStatusMessage({ message: "Server error", type: "error" });
+    } finally {
+      setAddingBill(false);
     }
   };
 
@@ -217,10 +240,15 @@ const Admin = () => {
               <button
                 onClick={handleAddBill}
                 className="w-full bg-[#00509e] text-white py-3 rounded-lg text-lg font-semibold transition-all hover:bg-[#003366] disabled:bg-gray-400"
-                disabled={!newBill.trim()}
+                disabled={!newBill.trim() || addingBill}
               >
-                Add Bill
+                {addingBill ? "Adding..." : "Add Bill"}
               </button>
+              {statusMessage.message && (
+                <div className={`mt-4 p-3 rounded-lg font-medium text-center ${statusMessage.type === "success" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+                  {statusMessage.message}
+                </div>
+              )}
             </div>
           </div>
         )}

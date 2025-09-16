@@ -1,10 +1,9 @@
 import mongoose from "mongoose";
-import express from "express";
 
-const FeedbackSchema = new mongoose.Schema({
-    comment: { type: String, required: true },
-    sentiment: { type: Number, default: 0 },
-    summary: { type: String },
-    bill_id: { type: String, required: true },
+const feedbackSchema = new mongoose.Schema({
+  problemId: { type: mongoose.Schema.Types.ObjectId, ref: "Problem" },
+  comment: { type: String, required: true },
+  sentiment: { type: String, enum: ["positive", "neutral", "negative"], default: "neutral" },
 }, { timestamps: true });
-export default mongoose.model("Feedback",FeedbackSchema);
+
+export default mongoose.model("Feedback", feedbackSchema);

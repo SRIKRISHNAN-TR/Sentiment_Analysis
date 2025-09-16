@@ -1,7 +1,7 @@
 // import Home from './components/Home';
-// import LoginPage from './components/Login';
+// // import LoginPage from './components/Login';
 // import { BrowserRouter, Routes, Route } from "react-router-dom";
-// import SignupPage from "./components/Signup";
+// // import SignupPage from "./components/Signup";
 
 
 // function App() {
@@ -18,11 +18,28 @@
 
 // export default App;
 
-import Home from './components/Home'
-import Admin from './components/Admin'
-function App() {
-  return <Admin />
+// // import Home from './components/Home'
+// // import Admin from './components/Admin'
+// // function App() {
+// //   return <Admin />
 
+// // }
+
+// // export default App
+
+import Home from './components/Home';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Admin from './components/Admin';
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+                <Route path="/Admin" element={<Admin />} />
+        </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;

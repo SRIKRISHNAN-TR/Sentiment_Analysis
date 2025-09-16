@@ -3,38 +3,27 @@ import Feedback from "../models/Feedback.js";
 
 const router = express.Router();
 
-router.post("/feedback", async (req, res) => {
+// GET all feedbacks
+router.get("/", async (req, res) => {
   try {
-    const { comment, sentiment, summary } = req.body;
-
-    if (!comment) {
-      return res.status(400).json({ error: "Comment is required" });
-    }
-
-    const newFeedback = new Feedback({
-      comment,
-      sentiment,
-      summary,
-    });
-
-    await newFeedback.save();
-    res.status(201).json({
-      message: "Feedback saved successfully",
-      feedback: newFeedback,
-    });
+    const feedbacks = await Feedback.find();
+    res.json({ feedbacks });
   } catch (err) {
-    console.error("Error saving feedback:", err);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: err.message });
   }
 });
 
-// ✅ GET all feedback
-router.get("/feedback", async (req, res) => {
+// POST add feedback
+router.post("/add", async (req, res) => {
   try {
-    const feedbackList = await Feedback.find().sort({ createdAt: -1 });
-    res.json(feedbackList);
+    const { problemId, comment, sentiment } = req.body;
+    if (!problemId || !comment) return res.status(400).json({ error: "Missing fields" });
+
+    const newFeedback = new Feedback({ problemId, comment, sentiment });
+    const savedFeedback = await newFeedback.save();
+    res.status(201).json({ feedback: savedFeedback });
   } catch (err) {
-    res.status(500).json({ error: "Error fetching feedback" });
+    res.status(500).json({ error: err.message });
   }
 });
 
