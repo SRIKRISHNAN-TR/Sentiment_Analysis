@@ -15,6 +15,7 @@ import {
   TableRow,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import Navbar from "./NavbarComponent";
 
 const HandleBills = () => {
   const [bills, setBills] = useState([]);
@@ -30,6 +31,7 @@ const HandleBills = () => {
         introduced: "20/08/2025",
         passedLS: "21/08/2025",
         passedRS: "22/08/2025",
+        description: "A bill to reform healthcare services and improve accessibility for all citizens."
       },
       {
         id: "2",
@@ -38,6 +40,7 @@ const HandleBills = () => {
         introduced: "18/08/2025",
         passedLS: "19/08/2025",
         passedRS: "20/08/2025",
+        description: "Focused on improving school infrastructure and promoting digital learning in rural areas."
       },
       {
         id: "3",
@@ -46,6 +49,7 @@ const HandleBills = () => {
         introduced: "15/08/2025",
         passedLS: "16/08/2025",
         passedRS: "17/08/2025",
+        description: "Aimed at reducing pollution and promoting sustainable energy solutions across industries."
       },
       {
         id: "4",
@@ -54,13 +58,15 @@ const HandleBills = () => {
         introduced: "12/08/2025",
         passedLS: "13/08/2025",
         passedRS: "14/08/2025",
-      },
+        description: "Reforms taxation laws to simplify tax filing and promote compliance among citizens."
+      },    
     ];
     setBills(dummyBills);
   }, []);
 
   const handleBillClick = (billId) => {
-    navigate(`/home?billId=${billId}`);
+    const selectedBill = bills.find((bill) => bill.id === billId);
+    navigate(`/home/${billId}`, { state: { bill: selectedBill } });
   };
 
   const filteredBills = bills.filter(
@@ -70,91 +76,95 @@ const HandleBills = () => {
   );
 
   return (
-    <Box sx={{ backgroundColor: "#ffffff", minHeight: "100vh", py: 6 }}>
-      <Container maxWidth="lg">
-        <Typography
-          variant="h4"
-          align="center"
-          sx={{
-            fontWeight: "bold",
-            color: "#0a1f44",
-            mb: 4,
-            textTransform: "uppercase",
-            letterSpacing: "1px",
-          }}
-        >
-          Bills List
-        </Typography>
+    <>
+      <Navbar />
+      <Box sx={{ backgroundColor: "#ffffff", minHeight: "100vh", py: 6 }}>
+        <Container maxWidth="lg">
+          <Typography
+            variant="h4"
+            align="center"
+            sx={{
+              fontWeight: "bold",
+              color: "#0a1f44",
+              mb: 4,
+              textTransform: "uppercase",
+              letterSpacing: "1px",
+            }}
+          >
+            Bills List
+          </Typography>
 
-        <TextField
-          fullWidth
-          placeholder="Search by Bill ID or Title..."
-          variant="outlined"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-          sx={{ mb: 4 }}
-        />
+          <TextField
+            fullWidth
+            placeholder="Search by Bill ID or Title..."
+            variant="outlined"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+            sx={{ mb: 4 }}
+          />
 
-        <TableContainer component={Paper} elevation={3}>
-          <Table>
-            <TableHead sx={{ backgroundColor: "#0a1f44" }}>
-              <TableRow>
-                <TableCell sx={{ color: "white", fontWeight: "bold" }}>ID</TableCell>
-                <TableCell sx={{ color: "white", fontWeight: "bold" }}>Title</TableCell>
-                <TableCell sx={{ color: "white", fontWeight: "bold" }}>Ministry</TableCell>
-                <TableCell sx={{ color: "white", fontWeight: "bold" }}>Introduced</TableCell>
-                <TableCell sx={{ color: "white", fontWeight: "bold" }}>Passed in LS</TableCell>
-                <TableCell sx={{ color: "white", fontWeight: "bold" }}>Passed in RS</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredBills.length > 0 ? (
-                filteredBills.map((bill) => (
-                  <TableRow
-                    key={bill.id}
-                    hover
-                    sx={{ cursor: "pointer" }}
-                    onClick={() => handleBillClick(bill.id)}
-                  >
-                    <TableCell>{bill.id}</TableCell>
-                    <TableCell>{bill.title}</TableCell>
-                    <TableCell>{bill.ministry}</TableCell>
-                    <TableCell>{bill.introduced}</TableCell>
-                    <TableCell>{bill.passedLS}</TableCell>
-                    <TableCell>{bill.passedRS}</TableCell>
-                  </TableRow>
-                ))
-              ) : (
+          <TableContainer component={Paper} elevation={3}>
+            <Table>
+              <TableHead sx={{ backgroundColor: " #0a3d62" }}>
                 <TableRow>
-                  <TableCell colSpan={6} align="center" sx={{ py: 3 }}>
-                    No bills found matching your search.
-                  </TableCell>
+                  <TableCell sx={{ color: "white", fontWeight: "bold" }}>ID</TableCell>
+                  <TableCell sx={{ color: "white", fontWeight: "bold" }}>Title</TableCell>
+                  <TableCell sx={{ color: "white", fontWeight: "bold" }}>Ministry</TableCell>
+                  <TableCell sx={{ color: "white", fontWeight: "bold" }}>Introduced</TableCell>
+                  <TableCell sx={{ color: "white", fontWeight: "bold" }}>Passed in LS</TableCell>
+                  <TableCell sx={{ color: "white", fontWeight: "bold" }}>Passed in RS</TableCell>
                 </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableHead>
 
-        <Typography
-          variant="body2"
-          align="center"
-          sx={{
-            mt: 5,
-            color: "#555",
-            fontStyle: "italic",
-          }}
-        >
-          Click on a bill to view details and submit your feedback.
-        </Typography>
-      </Container>
-    </Box>
+              <TableBody>
+                {filteredBills.length > 0 ? (
+                  filteredBills.map((bill) => (
+                    <TableRow
+                      key={bill.id}
+                      hover
+                      sx={{ cursor: "pointer" }}
+                      onClick={() => handleBillClick(bill.id)}
+                    >
+                      <TableCell>{bill.id}</TableCell>
+                      <TableCell>{bill.title}</TableCell>
+                      <TableCell>{bill.ministry}</TableCell>
+                      <TableCell>{bill.introduced}</TableCell>
+                      <TableCell>{bill.passedLS}</TableCell>
+                      <TableCell>{bill.passedRS}</TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={6} align="center" sx={{ py: 3 }}>
+                      No bills found matching your search.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+          <Typography
+            variant="body2"
+            align="center"
+            sx={{
+              mt: 5,
+              color: "#555",
+              fontStyle: "italic",
+            }}
+          >
+            Click on a bill to view details and submit your feedback.
+          </Typography>
+        </Container>
+      </Box>
+    </>
   );
 };
 

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Box, Typography, TextField, Button, Paper } from "@mui/material";
 import { useNavigate, Link, useLocation } from "react-router-dom";
-
+import parliamentImg from "../assets/parliament.jpg";
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -44,37 +44,60 @@ export default function LoginPage() {
     }
   };
 
+
   return (
-    <Box sx={{ minHeight: "100vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
-      <Paper elevation={10} sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, width: { xs: "100%", md: "900px" }, borderRadius: 3 }}>
-        
-        {/* Left panel */}
-        <Box sx={{ flex: 1, bgcolor: "#003366", color: "white", p: 4, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", textAlign: "center" }}>
-          <Typography variant="h4" sx={{ fontWeight: "bold", mb: 2 }}>Government eConsultation Portal</Typography>
-          <Typography variant="body1" sx={{ color: "#B3CDE0" }}>
-            Submit your suggestions for draft legislation and access your account here.
-          </Typography>
-        </Box>
-
-        {/* Right panel */}
-        <Box sx={{ flex: 1, p: 6, bgcolor: "white" }}>
-          <Typography variant="h5" sx={{ mb: 4, fontWeight: "bold" }}>Login</Typography>
-          {location.state?.success && (
-            <Typography sx={{ mb: 2, color: "green" }}>{location.state.success}</Typography>
-          )}
-          <Box component="form" onSubmit={handleLogin} sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
-            <TextField label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required fullWidth />
-            <TextField label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required fullWidth />
-            <Button type="submit" variant="contained" disabled={loading}>
-              {loading ? "Logging in..." : "Login"}
-            </Button>
+    <Box sx={{
+      minHeight: "100vh",
+      width: "100vw",
+      position: "relative",
+      overflow: "hidden",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center"
+    }}>
+      {/* Blurred background image */}
+      <Box
+        sx={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100vw",
+          height: "100vh",
+          zIndex: 0,
+          backgroundImage: `url(${parliamentImg})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      />
+      {/* Login container above background */}
+      <Box sx={{ position: "relative", zIndex: 1, width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
+        <Paper elevation={10} sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, width: { xs: "100%", md: "900px" }, borderRadius: 3, backdropFilter: "blur(0px)" }}>
+          {/* Left panel */}
+          <Box sx={{ flex: 1, bgcolor: "#003366", color: "white", p: 4, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", textAlign: "center", borderRadius: 3 }}>
+            <Typography variant="h4" sx={{ fontWeight: "bold", mb: 2 }}>Government eConsultation Portal</Typography>
+            <Typography variant="body1" sx={{ color: "#B3CDE0" }}>
+              Submit your suggestions for draft legislation and access your account here.
+            </Typography>
           </Box>
-
-          <Typography align="center" sx={{ mt: 3 }}>
-            Don’t have an account? <Link to="/register">Register</Link>
-          </Typography>
-        </Box>
-      </Paper>
-    </Box>
-  );
+          {/* Right panel */}
+          <Box sx={{ flex: 1, p: 6, bgcolor: "white", borderRadius: 3 }}>
+            <Typography variant="h5" sx={{ mb: 4, fontWeight: "bold" }}>Login</Typography>
+            {location.state?.success && (
+              <Typography sx={{ mb: 2, color: "green" }}>{location.state.success}</Typography>
+            )}
+            <Box component="form" onSubmit={handleLogin} sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+              <TextField label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required fullWidth />
+              <TextField label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required fullWidth />
+              <Button type="submit" variant="contained" disabled={loading}>
+                {loading ? "Logging in..." : "Login"}
+              </Button>
+            </Box>
+            <Typography align="center" sx={{ mt: 3 }}>
+              Don’t have an account? <Link to="/register">Register</Link>
+            </Typography>
+          </Box>
+        </Paper>
+      </Box>
+    </Box>
+  );
 }
