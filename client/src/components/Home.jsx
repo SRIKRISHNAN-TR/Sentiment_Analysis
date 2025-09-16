@@ -6,7 +6,7 @@ const Home = () => {
   const [result, setResult] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const apiKey = "AIzaSyBLMyDFa-p3bT7zXFyc5aQ8e6PQkP6b2uc";
+  const apiKey = "AIzaSyAHY-celGFHi2T5MHm8lPL0UxuStZBbCP0";
 
   const analyzeFeedback = async (text) => {
     const payload = {
