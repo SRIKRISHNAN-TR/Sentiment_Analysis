@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   PieChart,
   Pie,
@@ -30,22 +30,59 @@ const SignOutIcon = () => (
 /* -------- Main Component -------- */
 const Admin = () => {
   const [activeSection, setActiveSection] = useState("dashboard");
-  const [comments] = useState([
-    { text: "This is a great draft policy!", sentiment: "positive" },
-    { text: "Needs improvement in clarity.", sentiment: "neutral" },
-    { text: "I don't agree with this.", sentiment: "negative" },
-    { text: "Excellent initiative!", sentiment: "positive" },
-  ]);
-  const [totalUsers] = useState(5);
-
-  const [problems, setProblems] = useState(["Draft Bill 1", "Draft Bill 2", "Draft Bill 3"]);
-  const [selectedProblem, setSelectedProblem] = useState("Draft Bill 1");
+  const [comments, setComments] = useState([]);
+  const [problems, setProblems] = useState([]);
+  const [selectedProblem, setSelectedProblem] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [newBill, setNewBill] = useState("");
   const [statusMessage, setStatusMessage] = useState({ message: "", type: "" });
   const [addingBill, setAddingBill] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [description , setDescription] = useState("");
+
+  // Function to fetch problems from the backend
+  const fetchProblems = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/problems");
+      if (res.ok) {
+        const data = await res.json();
+        setProblems(data.problems.map(p => p.title));
+        if (data.problems.length > 0) {
+          setSelectedProblem(data.problems[0].title);
+        }
+      } else {
+        console.error("Failed to fetch problems:", res.statusText);
+      }
+    } catch (err) {
+      console.error("Network error when fetching problems:", err);
+    }
+  };
+
+  // Function to fetch comments from the backend
+  const fetchComments = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/comments");
+      if (res.ok) {
+        const data = await res.json();
+        setComments(data.comments);
+      } else {
+        console.error("Failed to fetch comments:", res.statusText);
+      }
+    } catch (err) {
+      console.error("Network error when fetching comments:", err);
+    }
+  };
+
+  // Fetch data on component mount
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      await Promise.all([fetchProblems(), fetchComments()]);
+      setLoading(false);
+    };
+    fetchData();
+  }, []);
 
   /* Pie Chart Data */
   const sentimentData = [
@@ -61,6 +98,8 @@ const Admin = () => {
   };
 
   /* Word Cloud */
+  // NOTE: This data is still hardcoded. You would need a backend function
+  // to analyze comments and generate this dynamically.
   const words = [
     { text: "mandatory training", sentiment: "negative" },
     { text: "poorly organized", sentiment: "negative" },
@@ -88,14 +127,15 @@ const Admin = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ title: newBill, createdBy: "admin@gmail.com" }),
+        body: JSON.stringify({ title: newBill, createdBy: "admin" }), // Assuming a simple createdBy for now
       });
 
       const data = await res.json();
       if (res.ok) {
         setStatusMessage({ message: "Bill added successfully!", type: "success" });
-        setProblems((prev) => [...prev, data.problem.title]); // update UI
         setNewBill("");
+        // Re-fetch problems to update the UI with the new bill
+        await fetchProblems();
       } else {
         setStatusMessage({ message: "Error: " + data.error, type: "error" });
       }
@@ -107,17 +147,21 @@ const Admin = () => {
     }
   };
 
+  if (loading) {
+    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+  }
+
   return (
     <div className="flex min-h-screen bg-gray-50 font-sans antialiased">
       {/* Sidebar */}
       <aside className="w-64 bg-[#003366] text-white flex flex-col p-6 shadow-xl z-20">
         <h2 className="text-2xl font-bold text-blue-200 mb-8">Admin Panel</h2>
         <nav className="flex flex-col gap-4 flex-grow">
-          <button onClick={() => setActiveSection("dashboard")} className={`flex items-center gap-3 p-3 rounded-xl transition-all duration-200 
+          <button onClick={() => setActiveSection("dashboard")} className={`flex items-center gap-3 p-3 rounded-xl transition-all duration-200  
             ${activeSection === "dashboard" ? "bg-blue-800 text-white font-semibold" : "text-blue-200 hover:bg-blue-800 hover:text-white"}`}>
             <ChartPieIcon /> Dashboard
           </button>
-          <button onClick={() => setActiveSection("add")} className={`flex items-center gap-3 p-3 rounded-xl transition-all duration-200 
+          <button onClick={() => setActiveSection("add")} className={`flex items-center gap-3 p-3 rounded-xl transition-all duration-200  
             ${activeSection === "add" ? "bg-blue-800 text-white font-semibold" : "text-blue-200 hover:bg-blue-800 hover:text-white"}`}>
             <CommentDotsIcon /> Add Bill
           </button>
@@ -145,7 +189,7 @@ const Admin = () => {
               </div>
               <div className="bg-white p-8 rounded-3xl shadow-lg border border-gray-200 flex flex-col items-center justify-center transition-transform transform hover:scale-105 hover:shadow-2xl">
                 <h3 className="text-xl font-semibold mb-2 text-gray-700">Total Users</h3>
-                <p className="text-6xl font-extrabold text-[#00509e]">{totalUsers}</p>
+                <p className="text-6xl font-extrabold text-[#00509e]">N/A</p>
               </div>
             </div>
 
@@ -154,7 +198,7 @@ const Admin = () => {
               <h2 className="text-2xl font-semibold mb-4 text-gray-900">Select Bill for Analysis</h2>
               <div className="border border-gray-300 rounded-2xl p-4 cursor-pointer bg-gray-50 flex items-center justify-between transition-all hover:bg-gray-100"
                 onClick={() => setDropdownOpen(!dropdownOpen)}>
-                <span className="text-gray-700 text-lg">{selectedProblem}</span>
+                <span className="text-gray-700 text-lg">{selectedProblem || "No bills available"}</span>
                 <svg className={`w-5 h-5 text-gray-500 transition-transform ${dropdownOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
                 </svg>
