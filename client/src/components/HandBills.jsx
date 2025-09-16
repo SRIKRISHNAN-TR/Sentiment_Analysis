@@ -4,13 +4,15 @@ import {
   Box,
   Container,
   Typography,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-  Divider,
   TextField,
   InputAdornment,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 
@@ -21,16 +23,44 @@ const HandleBills = () => {
 
   useEffect(() => {
     const dummyBills = [
-      { id: "1", title: "Healthcare Reform Bill", description: "A bill to reform the healthcare system." },
-      { id: "2", title: "Education Improvement Bill", description: "A bill to improve education standards." },
-      { id: "3", title: "Environmental Protection Bill", description: "A bill to protect the environment." },
-      { id: "4", title: "Taxation Policy Bill", description: "A bill to reform the taxation policy." }
+      {
+        id: "1",
+        title: "Healthcare Reform Bill, 2025",
+        ministry: "HEALTH",
+        introduced: "20/08/2025",
+        passedLS: "21/08/2025",
+        passedRS: "22/08/2025",
+      },
+      {
+        id: "2",
+        title: "Education Improvement Bill, 2025",
+        ministry: "EDUCATION",
+        introduced: "18/08/2025",
+        passedLS: "19/08/2025",
+        passedRS: "20/08/2025",
+      },
+      {
+        id: "3",
+        title: "Environmental Protection Bill, 2025",
+        ministry: "ENVIRONMENT",
+        introduced: "15/08/2025",
+        passedLS: "16/08/2025",
+        passedRS: "17/08/2025",
+      },
+      {
+        id: "4",
+        title: "Taxation Policy Bill, 2025",
+        ministry: "FINANCE",
+        introduced: "12/08/2025",
+        passedLS: "13/08/2025",
+        passedRS: "14/08/2025",
+      },
     ];
     setBills(dummyBills);
   }, []);
 
   const handleBillClick = (billId) => {
-    navigate(`/home/${billId}`);
+    navigate(`/home?billId=${billId}`);
   };
 
   const filteredBills = bills.filter(
@@ -40,7 +70,7 @@ const HandleBills = () => {
   );
 
   return (
-    <Box sx={{ backgroundColor: "#fff", minHeight: "100vh", py: 4 }}>
+    <Box sx={{ backgroundColor: "#ffffff", minHeight: "100vh", py: 6 }}>
       <Container maxWidth="lg">
         <Typography
           variant="h4"
@@ -53,14 +83,13 @@ const HandleBills = () => {
             letterSpacing: "1px",
           }}
         >
-          Passed Bills
+          Bills List
         </Typography>
 
         <TextField
           fullWidth
-          placeholder="Search by bill ID or title..."
+          placeholder="Search by Bill ID or Title..."
           variant="outlined"
-          sx={{ mb: 4 }}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           InputProps={{
@@ -70,50 +99,48 @@ const HandleBills = () => {
               </InputAdornment>
             ),
           }}
+          sx={{ mb: 4 }}
         />
 
-        <List sx={{ width: "100%", bgcolor: "white" }}>
-          {filteredBills.map((bill, idx) => (
-            <React.Fragment key={bill.id}>
-              <ListItem disablePadding>
-                <ListItemButton
-                  onClick={() => handleBillClick(bill.id)}
-                  sx={{
-                    py: 3,
-                    px: 4,
-                    borderRadius: 2,
-                    mb: 2,
-                    bgcolor: "#f5f7fa",
-                    "&:hover": {
-                      bgcolor: "#e8f0fe",
-                      boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
-                    },
-                  }}
-                >
-                  <ListItemText
-                    primary={
-                      <Typography variant="h6" sx={{ fontWeight: 600, color: "#0a1f44" }}>
-                        {bill.id}.  {bill.title}
-                      </Typography>
-                    }
-                    secondary={
-                      <Typography variant="body2" sx={{ color: "#1976d2" }}>
-                        {bill.description}
-                      </Typography>
-                    }
-                  />
-                </ListItemButton>
-              </ListItem>
-              {idx < filteredBills.length - 1 && <Divider />}
-            </React.Fragment>
-          ))}
-
-          {filteredBills.length === 0 && (
-            <Typography variant="body1" align="center" sx={{ color: "#555", mt: 3 }}>
-              No bills found matching your search.
-            </Typography>
-          )}
-        </List>
+        <TableContainer component={Paper} elevation={3}>
+          <Table>
+            <TableHead sx={{ backgroundColor: "#0a1f44" }}>
+              <TableRow>
+                <TableCell sx={{ color: "white", fontWeight: "bold" }}>ID</TableCell>
+                <TableCell sx={{ color: "white", fontWeight: "bold" }}>Title</TableCell>
+                <TableCell sx={{ color: "white", fontWeight: "bold" }}>Ministry</TableCell>
+                <TableCell sx={{ color: "white", fontWeight: "bold" }}>Introduced</TableCell>
+                <TableCell sx={{ color: "white", fontWeight: "bold" }}>Passed in LS</TableCell>
+                <TableCell sx={{ color: "white", fontWeight: "bold" }}>Passed in RS</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredBills.length > 0 ? (
+                filteredBills.map((bill) => (
+                  <TableRow
+                    key={bill.id}
+                    hover
+                    sx={{ cursor: "pointer" }}
+                    onClick={() => handleBillClick(bill.id)}
+                  >
+                    <TableCell>{bill.id}</TableCell>
+                    <TableCell>{bill.title}</TableCell>
+                    <TableCell>{bill.ministry}</TableCell>
+                    <TableCell>{bill.introduced}</TableCell>
+                    <TableCell>{bill.passedLS}</TableCell>
+                    <TableCell>{bill.passedRS}</TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={6} align="center" sx={{ py: 3 }}>
+                    No bills found matching your search.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
 
         <Typography
           variant="body2"
@@ -124,7 +151,7 @@ const HandleBills = () => {
             fontStyle: "italic",
           }}
         >
-          Select a bill to view details and submit your valuable feedback.
+          Click on a bill to view details and submit your feedback.
         </Typography>
       </Container>
     </Box>
