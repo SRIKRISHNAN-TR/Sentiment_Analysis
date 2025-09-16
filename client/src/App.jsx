@@ -39,9 +39,9 @@ function App() {
     <BrowserRouter>
       <Routes>
       <Route path="/bills" element={<HandleBills />} />
-        <Route path="/home/:billId" element={<Home />} />
-                <Route path="/Admin" element={<Admin />} />
-                <Route path="/" element={<LoginPage />} />
+      <Route path="/bill/:billId" element={<Home />} />
+      <Route path="/Admin" element={<Admin />} />
+      <Route path="/" element={<LoginPage />} />
       <Route path="/register" element={<SignupPage />} />
         
         </Routes>

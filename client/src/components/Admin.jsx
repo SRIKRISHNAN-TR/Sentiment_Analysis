@@ -45,6 +45,7 @@ const Admin = () => {
   const [newBill, setNewBill] = useState("");
   const [statusMessage, setStatusMessage] = useState({ message: "", type: "" });
   const [addingBill, setAddingBill] = useState(false);
+  const [description , setDescription] = useState("");
 
   /* Pie Chart Data */
   const sentimentData = [
@@ -230,12 +231,19 @@ const Admin = () => {
             <h1 className="text-4xl font-bold text-gray-900 mb-8">Add a New Bill</h1>
             <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-200 w-full max-w-lg text-center">
               <p className="text-gray-600 mb-6">Enter the name of the new legislative bill to add it for public feedback.</p>
-              <input 
-                type="text" 
-                value={newBill} 
+              <input
+                type="text"
+                value={newBill}
                 onChange={(e) => setNewBill(e.target.value)}
-                placeholder="e.g., The Digital Privacy Bill 2025" 
+                placeholder="e.g., The Digital Privacy Bill 2025"
                 className="w-full px-4 py-3 mb-4 text-lg border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+              />
+              <input
+                type = "text"
+                value= {description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Description"
+                className="w-full px-4 py-3 mb-4 text-lg border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all pb-30"
               />
               <button
                 onClick={handleAddBill}

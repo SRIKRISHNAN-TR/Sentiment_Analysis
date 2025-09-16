@@ -30,7 +30,7 @@ const HandleBills = () => {
   }, []);
 
   const handleBillClick = (billId) => {
-    navigate(`/home/${billId}`);
+    navigate(`/bill/${billId}`);
   };
 
   const filteredBills = bills.filter(
