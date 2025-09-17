@@ -16,8 +16,19 @@ router.get("/", async (req, res) => {
 // POST a new problem
 router.post("/add", async (req, res) => {
   try {
-    const { title, createdBy } = req.body;
-    const newProblem = new Problem({ title, createdBy });
+    const { title, description, createdBy } = req.body;
+    
+    // Validation
+    if (!title || !description) {
+      return res.status(400).json({ error: "Title and description are required" });
+    }
+    
+    const newProblem = new Problem({ 
+      title, 
+      description, 
+      createdBy: createdBy || "admin" 
+    });
+    
     await newProblem.save();
     res.status(201).json({ problem: newProblem });
   } catch (err) {

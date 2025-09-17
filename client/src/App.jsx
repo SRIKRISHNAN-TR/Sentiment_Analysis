@@ -37,6 +37,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
                 <Route path="/Admin" element={<Admin />} />
+                <Route path="/Home" element={<Home />} />
+
         </Routes>
     </BrowserRouter>
   );

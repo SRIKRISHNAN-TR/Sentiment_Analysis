@@ -32,15 +32,15 @@ function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-yellow-50 via-yellow-100 to-yellow-200 flex flex-col items-center justify-center p-6">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 via-blue-100 to-blue-200 flex flex-col items-center justify-center p-6">
       {/* Header */}
       <div className="text-center mb-10">
-        <h1 className="text-5xl font-extrabold text-yellow-900 drop-shadow-sm">
+        <h1 className="text-5xl font-extrabold text-blue-900 drop-shadow-sm">
           Government eConsultation Portal
         </h1>
-        <p className="mt-4 text-yellow-800 text-lg max-w-2xl mx-auto leading-relaxed">
+        <p className="mt-4 text-blue-800 text-lg max-w-2xl mx-auto leading-relaxed">
           Submit your suggestion for draft legislation and receive instant{" "}
-          <span className="font-semibold text-yellow-900">AI-powered</span>{" "}
+          <span className="font-semibold text-blue-900">AI-powered</span>{" "}
           sentiment analysis.
         </p>
       </div>
@@ -48,17 +48,17 @@ function Home() {
       {/* Form */}
       <form
         onSubmit={handleSubmit}
-        className="bg-white/90 backdrop-blur-sm border border-yellow-200 shadow-xl rounded-2xl p-8 w-full max-w-2xl transition hover:shadow-2xl"
+        className="bg-white/90 backdrop-blur-sm border border-blue-200 shadow-xl rounded-2xl p-8 w-full max-w-2xl transition hover:shadow-2xl"
       >
         <label
-          className="block text-yellow-900 text-lg font-semibold mb-3"
+          className="block text-blue-900 text-lg font-semibold mb-3"
           htmlFor="comment"
         >
           Suggestion / Comment
         </label>
         <textarea
           id="comment"
-          className="w-full p-4 border border-yellow-300 rounded-lg focus:outline-none focus:ring-4 focus:ring-yellow-400 text-gray-700 text-base"
+          className="w-full p-4 border border-blue-300 rounded-lg focus:outline-none focus:ring-4 focus:ring-blue-400 text-gray-700 text-base"
           rows="6"
           placeholder="Type your suggestion here..."
           value={comment}
@@ -68,10 +68,10 @@ function Home() {
 
         <button
           type="submit"
-          className={`mt-6 w-full bg-yellow-600 text-white text-lg font-semibold py-3 rounded-lg shadow-md transition-all duration-300 ${
+          className={`mt-6 w-full bg-blue-600 text-white text-lg font-semibold py-3 rounded-lg shadow-md transition-all duration-300 ${
             loading
               ? "opacity-70 cursor-not-allowed"
-              : "hover:bg-yellow-700 hover:shadow-lg"
+              : "hover:bg-blue-700 hover:shadow-lg"
           }`}
           disabled={loading}
         >
@@ -81,17 +81,17 @@ function Home() {
 
       {/* Result */}
       {result && (
-        <div className="mt-10 bg-yellow-50 border border-yellow-300 p-8 rounded-2xl shadow-md text-center max-w-xl w-full">
-          <h2 className="text-2xl font-bold text-yellow-900 mb-4">
+        <div className="mt-10 bg-blue-50 border border-blue-300 p-8 rounded-2xl shadow-md text-center max-w-xl w-full">
+          <h2 className="text-2xl font-bold text-blue-900 mb-4">
             Sentiment Analysis Result
           </h2>
-          <p className="text-xl text-yellow-800">
+          <p className="text-xl text-blue-800">
             Sentiment:{" "}
-            <span className="font-bold text-yellow-900">{result.label}</span>
+            <span className="font-bold text-blue-900">{result.label}</span>
           </p>
-          <p className="text-lg text-yellow-700 mt-2">
+          <p className="text-lg text-blue-700 mt-2">
             Confidence:{" "}
-            <span className="font-semibold text-yellow-900">
+            <span className="font-semibold text-blue-900">
               {(result.score * 100).toFixed(1)}%
             </span>
           </p>
