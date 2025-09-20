@@ -8,13 +8,13 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-      <Route path="/bills" element={<HandleBills />} />
-      <Route path="/bill/:billId" element={<Home />} />
-      <Route path="/Admin" element={<Admin />} />
-      <Route path="/" element={<LoginPage />} />
-      <Route path="/register" element={<SignupPage />} />
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/Admin" element={<Admin />} />
+        <Route path="/register" element={<SignupPage />} />
+        <Route path="/bills" element={<HandleBills />} />
+        <Route path="/bill/:billId" element={<Home />} />
         
-        </Routes>
+      </Routes>
     </BrowserRouter>
   );
 }
