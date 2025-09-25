@@ -19,25 +19,27 @@ const HandleBills = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const dummyBills = [
-      { id: "1", title: "Healthcare Reform Bill", description: "A bill to reform the healthcare system." },
-      { id: "2", title: "Education Improvement Bill", description: "A bill to improve education standards." },
-      { id: "3", title: "Environmental Protection Bill", description: "A bill to protect the environment." },
-      { id: "4", title: "Taxation Policy Bill", description: "A bill to reform the taxation policy." }
-    ];
-    setBills(dummyBills);
-  }, []);
-
-  const handleBillClick = (billId) => {
-    navigate(`/bill/${billId}`);
+  const fetchBills = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/problems/getbills");
+      const data = await res.json();
+      console.log("Fetched bills:", data);
+      setBills(data.problems || []);
+    } catch (err) {
+      console.error("Network error:", err);
+    }
   };
+
+  useEffect(() => {
+    fetchBills();
+  }, []);
 
   const filteredBills = bills.filter(
     (bill) =>
       bill.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      bill.id.toLowerCase().includes(searchTerm.toLowerCase())
+      bill._id.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
 
   return (
     <Box sx={{ backgroundColor: "#fff", minHeight: "100vh", py: 4 }}>
@@ -56,6 +58,7 @@ const HandleBills = () => {
           Passed Bills
         </Typography>
 
+        {/* Search Bar */}
         <TextField
           fullWidth
           placeholder="Search by bill ID or title..."
@@ -73,43 +76,61 @@ const HandleBills = () => {
         />
 
         <List sx={{ width: "100%", bgcolor: "white" }}>
-          {filteredBills.map((bill, idx) => (
-            <React.Fragment key={bill.id}>
-              <ListItem disablePadding>
-                <ListItemButton
-                  onClick={() => handleBillClick(bill.id)}
-                  sx={{
-                    py: 3,
-                    px: 4,
-                    borderRadius: 2,
-                    mb: 2,
-                    bgcolor: "#f5f7fa",
-                    "&:hover": {
-                      bgcolor: "#e8f0fe",
-                      boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
-                    },
-                  }}
-                >
-                  <ListItemText
-                    primary={
-                      <Typography variant="h6" sx={{ fontWeight: 600, color: "#0a1f44" }}>
-                        {bill.id}.  {bill.title}
-                      </Typography>
-                    }
-                    secondary={
-                      <Typography variant="body2" sx={{ color: "#1976d2" }}>
-                        {bill.description}
-                      </Typography>
-                    }
-                  />
-                </ListItemButton>
-              </ListItem>
-              {idx < filteredBills.length - 1 && <Divider />}
-            </React.Fragment>
-          ))}
-
-          {filteredBills.length === 0 && (
-            <Typography variant="body1" align="center" sx={{ color: "#555", mt: 3 }}>
+          {filteredBills.length > 0 ? (
+            filteredBills.map((bill, idx) => (
+              <React.Fragment key={bill._id}>
+                <ListItem disablePadding>
+                  <ListItemButton
+                    onClick={() => navigate("/comment",{state: {bill}})}
+                    sx={{
+                      py: 3,
+                      px: 4,
+                      borderRadius: 2,
+                      mb: 2,
+                      bgcolor: "#f5f7fa",
+                      "&:hover": {
+                        bgcolor: "#e8f0fe",
+                        boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+                      },
+                    }}
+                  >
+                    <ListItemText
+                      primary={
+                        <Box sx={{ display: "flex", alignItems: "center" }}>
+                          <Typography variant="h6" sx={{ fontWeight: 600, color: "#0a1f44" }}>
+                            {bill.title}
+                          </Typography>
+                          <Typography
+                            variant="caption"
+                            sx={{ color: "gray", marginLeft: "auto" }}
+                          >
+                            Updated at: {bill.updatedAt.slice(0, 10)}
+                          </Typography>
+                        </Box>
+                      }
+                      secondary={
+                        <>
+                          <Typography
+                            variant="caption"
+                            sx={{ color: "gray" }}
+                          >
+                            Created by: {bill.createdBy}
+                          </Typography>
+                        </>
+                      }
+                      
+                    />
+                  </ListItemButton>
+                </ListItem>
+                {idx < filteredBills.length - 1 && <Divider />}
+              </React.Fragment>
+            ))
+          ) : (
+            <Typography
+              variant="body1"
+              align="center"
+              sx={{ color: "#555", mt: 3 }}
+            >
               No bills found matching your search.
             </Typography>
           )}
